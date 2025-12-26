@@ -1,46 +1,30 @@
 using BenchmarkDotNet.Attributes;
 using Aoc2025.Days;
 using Aoc2025.Benchmarks.Infrastructure;
+using Aoc2025.Registry;
 
 namespace Aoc2025.Benchmarks;
 
-[Config(typeof(FastBenchmarkConfig))]
 [MemoryDiagnoser]
+[Config(typeof(FastBenchmarkConfig))]
 public class Day06Bench
 {
-    private readonly Day06 _day = new();
-    private string[] _input = Array.Empty<string>();
+    private string[] _input = [];
+    private ISolution _solution = null!;
 
     [GlobalSetup]
     public void Setup()
     {
+        DayLoader.LoadAll();
         _input = BenchmarkInput.LoadDay(6);
+        DayRegistry.TryCreate(6, out _solution);
     }
 
     [Benchmark]
-    public void SetInput()
+    public void SolveDay06()
     {
-        _day.SetInput(_input);
-    }
-
-    [Benchmark]
-    public string Part1()
-    {
-        _day.SetInput(_input);
-        return _day.SolvePart1();
-    }
-
-    [Benchmark]
-    public string Part2()
-    {
-        _day.SetInput(_input);
-        return _day.SolvePart2();
-    }
-
-    [Benchmark]
-    public (string Part1, string Part2) FullPipeline()
-    {
-        _day.SetInput(_input);
-        return (_day.SolvePart1(), _day.SolvePart2());
+        _solution.SetInput(_input);
+        _ = _solution.SolvePart1();
+        _ = _solution.SolvePart2();
     }
 }
