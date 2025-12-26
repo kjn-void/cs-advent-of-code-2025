@@ -179,7 +179,7 @@ dotnet run --project benchmarks/Aoc2025.Benchmarks -c Release
 | 07  | 24        |
 | 08  | 29_000    |
 | 09  | 21_000    |
-| 10  | 105_000   |
+| 10  | 79_000    |
 | 11  | 111       |
 | 12  | 175       |
 
