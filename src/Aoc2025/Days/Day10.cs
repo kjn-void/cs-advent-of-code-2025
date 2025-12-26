@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Threading.Tasks;
 using Aoc2025.Registry;
 
 namespace Aoc2025.Days;
@@ -35,7 +36,6 @@ public sealed class Day10 : ISolution
                 continue;
             }
 
-            // Lights
             var lightStr = line[(lb + 1)..rb];
             var lights = new int[lightStr.Length];
             for (var i = 0; i < lightStr.Length; i++)
@@ -43,7 +43,6 @@ public sealed class Day10 : ISolution
                 lights[i] = lightStr[i] == '#' ? 1 : 0;
             }
 
-            // Joltage
             var joltage = Array.Empty<int>();
             var cb = line.IndexOf('{');
             var ce = line.IndexOf('}');
@@ -52,11 +51,8 @@ public sealed class Day10 : ISolution
                 joltage = ParseList(line[cb..(ce + 1)]);
             }
 
-            // Buttons
             var buttons = new List<int[]>();
-            var mid = cb >= 0
-                ? line[(rb + 1)..cb]
-                : line[(rb + 1)..];
+            var mid = cb >= 0 ? line[(rb + 1)..cb] : line[(rb + 1)..];
 
             var idx = 0;
             while (idx < mid.Length)
@@ -66,6 +62,7 @@ public sealed class Day10 : ISolution
                 {
                     break;
                 }
+
                 var pe = mid.IndexOf(')', ps);
                 if (pe < 0)
                 {
@@ -110,7 +107,7 @@ public sealed class Day10 : ISolution
     }
 
     // ------------------------------------------------------------
-    // Part 1
+    // Part 1 (unchanged, GF(2))
     // ------------------------------------------------------------
 
     public string SolvePart1()
@@ -136,6 +133,7 @@ public sealed class Day10 : ISolution
         var mCount = m.Buttons.Count;
 
         var mat = new int[n, mCount + 1];
+
         for (var i = 0; i < n; i++)
         {
             mat[i, mCount] = m.TargetLights[i];
@@ -190,24 +188,25 @@ public sealed class Day10 : ISolution
             pivotRow++;
         }
 
-        var free = new List<int>();
+        var freeCount = 0;
+        var free = new int[mCount];
         for (var c = 0; c < mCount; c++)
         {
             if (pivotCol[c] < 0)
             {
-                free.Add(c);
+                free[freeCount++] = c;
             }
         }
 
         var best = int.MaxValue;
-        var limit = 1 << free.Count;
+        var limit = 1 << freeCount;
         var x = new int[mCount];
 
         for (var mask = 0; mask < limit; mask++)
         {
             Array.Clear(x);
 
-            for (var i = 0; i < free.Count; i++)
+            for (var i = 0; i < freeCount; i++)
             {
                 if (((mask >> i) & 1) != 0)
                 {
@@ -246,20 +245,6 @@ public sealed class Day10 : ISolution
         return best;
     }
 
-    private static void SwapRows(double[,] mat, int a, int b)
-    {
-        if (a == b)
-        {
-            return;
-        }
-
-        var cols = mat.GetLength(1);
-        for (var i = 0; i < cols; i++)
-        {
-            (mat[a, i], mat[b, i]) = (mat[b, i], mat[a, i]);
-        }
-    }
-
     private static void SwapRows(int[,] mat, int a, int b)
     {
         if (a == b)
@@ -275,7 +260,7 @@ public sealed class Day10 : ISolution
     }
 
     // ------------------------------------------------------------
-    // Part 2
+    // Part 2 (optimized + correct)
     // ------------------------------------------------------------
 
     public string SolvePart2()
@@ -285,37 +270,35 @@ public sealed class Day10 : ISolution
             return "0";
         }
 
-        var tasks = new Task<int>[_machines.Count];
+        var results = new int[_machines.Count];
 
-        for (var i = 0; i < _machines.Count; i++)
+        Parallel.For(0, _machines.Count, i =>
         {
-            var machine = _machines[i];
-
-            tasks[i] = Task.Run(() =>
-            {
-                return SolveJoltage(machine);
-            });
-        }
-
-        Task.WaitAll(tasks);
+            results[i] = SolveJoltage(_machines[i]);
+        });
 
         var total = 0;
-        for (var i = 0; i < tasks.Length; i++)
+        for (var i = 0; i < results.Length; i++)
         {
-            total += tasks[i].Result;
+            total += results[i];
         }
 
         return total.ToString(CultureInfo.InvariantCulture);
     }
+
     private static int SolveJoltage(MachineData m)
     {
         var n = m.TargetJoltage.Length;
         var mCount = m.Buttons.Count;
+        var cols = mCount + 1;
 
-        var mat = new double[n, mCount + 1];
+        var mat = new double[n * cols];
+
+        static int Idx(int r, int c, int cols) => r * cols + c;
+
         for (var i = 0; i < n; i++)
         {
-            mat[i, mCount] = m.TargetJoltage[i];
+            mat[Idx(i, mCount, cols)] = m.TargetJoltage[i];
         }
 
         for (var j = 0; j < mCount; j++)
@@ -324,7 +307,7 @@ public sealed class Day10 : ISolution
             {
                 if (idx < n)
                 {
-                    mat[idx, j] = 1.0;
+                    mat[Idx(idx, j, cols)] = 1.0;
                 }
             }
         }
@@ -338,7 +321,7 @@ public sealed class Day10 : ISolution
             var sel = -1;
             for (var r = pivotRow; r < n; r++)
             {
-                if (Math.Abs(mat[r, c]) > 1e-9)
+                if (Math.Abs(mat[Idx(r, c, cols)]) > 1e-9)
                 {
                     sel = r;
                     break;
@@ -350,12 +333,19 @@ public sealed class Day10 : ISolution
                 continue;
             }
 
-            SwapRows(mat, pivotRow, sel);
+            if (sel != pivotRow)
+            {
+                for (var k = c; k <= mCount; k++)
+                {
+                    (mat[Idx(pivotRow, k, cols)], mat[Idx(sel, k, cols)])
+                        = (mat[Idx(sel, k, cols)], mat[Idx(pivotRow, k, cols)]);
+                }
+            }
 
-            var div = mat[pivotRow, c];
+            var div = mat[Idx(pivotRow, c, cols)];
             for (var k = c; k <= mCount; k++)
             {
-                mat[pivotRow, k] /= div;
+                mat[Idx(pivotRow, k, cols)] /= div;
             }
 
             for (var r = 0; r < n; r++)
@@ -365,7 +355,7 @@ public sealed class Day10 : ISolution
                     continue;
                 }
 
-                var f = mat[r, c];
+                var f = mat[Idx(r, c, cols)];
                 if (Math.Abs(f) < 1e-9)
                 {
                     continue;
@@ -373,7 +363,7 @@ public sealed class Day10 : ISolution
 
                 for (var k = c; k <= mCount; k++)
                 {
-                    mat[r, k] -= f * mat[pivotRow, k];
+                    mat[Idx(r, k, cols)] -= f * mat[Idx(pivotRow, k, cols)];
                 }
             }
 
@@ -381,12 +371,13 @@ public sealed class Day10 : ISolution
             pivotRow++;
         }
 
-        var free = new List<int>();
+        var free = new int[mCount];
+        var freeCount = 0;
         for (var c = 0; c < mCount; c++)
         {
             if (pivotCol[c] < 0)
             {
-                free.Add(c);
+                free[freeCount++] = c;
             }
         }
 
@@ -410,7 +401,7 @@ public sealed class Day10 : ISolution
                 return;
             }
 
-            if (idx == free.Count)
+            if (idx == freeCount)
             {
                 var total = sum;
 
@@ -422,10 +413,10 @@ public sealed class Day10 : ISolution
                         continue;
                     }
 
-                    var v = mat[r, mCount];
+                    var v = mat[Idx(r, mCount, cols)];
                     for (var k = c + 1; k < mCount; k++)
                     {
-                        v -= mat[r, k] * x[k];
+                        v -= mat[Idx(r, k, cols)] * x[k];
                     }
 
                     if (v < -1e-6)
