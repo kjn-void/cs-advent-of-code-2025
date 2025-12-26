@@ -1,0 +1,78 @@
+########################################
+# .NET build artifacts
+########################################
+**/bin/
+**/obj/
+**/out/
+
+########################################
+# BenchmarkDotNet
+########################################
+**/BenchmarkDotNet.Artifacts/
+**/artifacts/
+**/.benchmarkdotnet/
+
+########################################
+# Test results / coverage
+########################################
+**/TestResults/
+**/*.trx
+**/*.coverage
+**/*.coveragexml
+**/coverage/
+**/coverage.opencover.xml
+**/coverage.cobertura.xml
+**/lcov.info
+
+########################################
+# NuGet / tooling caches
+########################################
+**/packages/
+.nuget/
+# If you want to keep packages.lock.json, remove this line:
+**/packages.lock.json
+
+########################################
+# Rider / IntelliJ
+########################################
+.idea/
+*.sln.iml
+
+########################################
+# Visual Studio / VS Code
+########################################
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+########################################
+# OS / editor junk
+########################################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.swp
+*.swo
+
+########################################
+# Inputs (AoC)
+########################################
+input/*
+!input/.gitkeep
+# Optional: if you store session cookie locally, ignore it too:
+**/aoc.session
+**/session.txt
+**/.env
+**/.env.*
+
+########################################
+# Logs
+########################################
+*.log
