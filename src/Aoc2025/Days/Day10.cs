@@ -280,16 +280,33 @@ public sealed class Day10 : ISolution
 
     public string SolvePart2()
     {
-        var total = 0;
-
-        foreach (var m in _machines)
+        if (_machines.Count == 0)
         {
-            total += SolveJoltage(m);
+            return "0";
+        }
+
+        var tasks = new Task<int>[_machines.Count];
+
+        for (var i = 0; i < _machines.Count; i++)
+        {
+            var machine = _machines[i];
+
+            tasks[i] = Task.Run(() =>
+            {
+                return SolveJoltage(machine);
+            });
+        }
+
+        Task.WaitAll(tasks);
+
+        var total = 0;
+        for (var i = 0; i < tasks.Length; i++)
+        {
+            total += tasks[i].Result;
         }
 
         return total.ToString(CultureInfo.InvariantCulture);
     }
-
     private static int SolveJoltage(MachineData m)
     {
         var n = m.TargetJoltage.Length;
