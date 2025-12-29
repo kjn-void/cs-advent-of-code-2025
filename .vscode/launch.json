@@ -1,0 +1,18 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Aoc2025",
+            "type": "coreclr",
+            "request": "launch",
+            "justMyCode": false,
+            "preLaunchTask": "build Aoc2025",
+            "program": "${workspaceFolder}/src/Aoc2025/bin/Debug/net8.0/Aoc2025.dll",
+            "cwd": "${workspaceFolder}",
+            "args": ["1"]        
+        }
+    ]
+}
