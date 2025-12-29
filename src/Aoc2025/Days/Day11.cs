@@ -5,7 +5,7 @@ namespace Aoc2025.Days;
 
 public sealed class Day11 : ISolution
 {
-    private Dictionary<string, List<string>> _adj = new();
+    private readonly Dictionary<string, List<string>> _adj = [];
 
     static Day11()
     {
@@ -110,23 +110,8 @@ public sealed class Day11 : ISolution
 
     public string SolvePart2()
     {
-        if (_adj.Count == 0)
-        {
-            return "0";
-        }
-
         var memo = new Dictionary<State, long>();
-
         var startMask = 0;
-        if ("svr" == "dac")
-        {
-            startMask |= 1;
-        }
-        if ("svr" == "fft")
-        {
-            startMask |= 2;
-        }
-
         var total = CountPathsWithRequired(
             "svr",
             startMask,

@@ -18,7 +18,9 @@ public sealed class Day01 : ISolution
         {
             var line = raw.Trim();
             if (line.Length == 0)
-                continue;
+            {
+                continue;                
+            }
 
             var dir = line[0];
             var val = int.Parse(line.AsSpan(1), CultureInfo.InvariantCulture);
@@ -43,7 +45,9 @@ public sealed class Day01 : ISolution
         {
             pos = Mod100(pos + delta);
             if (pos == 0)
-                countZero++;
+            {
+                countZero++;                
+            }
         }
 
         return countZero.ToString(CultureInfo.InvariantCulture);
@@ -61,11 +65,19 @@ public sealed class Day01 : ISolution
             for (var moved = 0; moved != delta; moved += step)
             {
                 pos += step;
-                if (pos < 0) pos += 100;
-                else if (pos >= 100) pos -= 100;
+                if (pos < 0)
+                {
+                    pos += 100;
+                }
+                else if (pos >= 100)
+                {
+                    pos -= 100;
+                }
 
                 if (pos == 0)
-                    countZero++;
+                {
+                    countZero++;                        
+                }
             }
         }
 

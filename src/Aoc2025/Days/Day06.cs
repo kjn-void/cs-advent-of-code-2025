@@ -149,10 +149,10 @@ public sealed class Day06 : ISolution
     private List<long> ExtractNumbersPart2(Block b)
     {
         var nums = new List<long>(b.End - b.Start + 1);
+        Span<char> buffer = stackalloc char[_rows];
 
         for (var c = b.Start; c <= b.End; c++)
         {
-            Span<char> buffer = stackalloc char[_rows];
             var len = 0;
 
             for (var r = 0; r < _rows - 1; r++)

@@ -5,7 +5,7 @@ namespace Aoc2025.Days;
 
 public sealed class Day04 : ISolution
 {
-    private string[] _grid = Array.Empty<string>();
+    private string[] _grid = [];
     private int _rows;
     private int _cols;
 

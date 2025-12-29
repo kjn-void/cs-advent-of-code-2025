@@ -6,7 +6,7 @@ namespace Aoc2025.Days;
 public sealed class Day08 : ISolution
 {
     private readonly List<Vec3> _points = [];
-    private Edge[] _edges = Array.Empty<Edge>();
+    private Edge[] _edges = [];
 
     static Day08()
     {
