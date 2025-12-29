@@ -1,6 +1,5 @@
 ﻿using Aoc2025.IO;
 using Aoc2025.Registry;
-using Aoc2025.Days;
 
 if (args.Length == 0)
 {

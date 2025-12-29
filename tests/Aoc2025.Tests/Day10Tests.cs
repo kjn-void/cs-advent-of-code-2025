@@ -1,6 +1,8 @@
 using Aoc2025.Days;
 using Xunit;
 
+namespace Aoc2025.Tests;
+
 public sealed class Day10Tests
 {
     private const string Example = """

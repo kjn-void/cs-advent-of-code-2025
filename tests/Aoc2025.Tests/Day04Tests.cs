@@ -1,7 +1,7 @@
 using Aoc2025.Days;
 using Xunit;
 
-namespace Aoc2025.Tests.Days;
+namespace Aoc2025.Tests;
 
 public sealed class Day04Tests
 {
