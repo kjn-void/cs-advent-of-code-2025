@@ -11,7 +11,7 @@ public static class DayLoader
     {
         if (_loaded)
         {
-            return;            
+            return;
         }
 
         _loaded = true;
@@ -21,7 +21,7 @@ public static class DayLoader
         foreach (var type in asm.GetTypes())
         {
             // Force static constructors for all ISolution implementations
-            if (!type.IsAbstract 
+            if (!type.IsAbstract
                 && typeof(ISolution).IsAssignableFrom(type))
             {
                 // Touch the type to trigger static ctor

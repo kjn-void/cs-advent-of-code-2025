@@ -19,7 +19,7 @@ public sealed class Day01 : ISolution
             var line = raw.Trim();
             if (line.Length == 0)
             {
-                continue;                
+                continue;
             }
 
             var dir = line[0];
@@ -46,7 +46,7 @@ public sealed class Day01 : ISolution
             pos = Mod100(pos + delta);
             if (pos == 0)
             {
-                countZero++;                
+                countZero++;
             }
         }
 
@@ -76,7 +76,7 @@ public sealed class Day01 : ISolution
 
                 if (pos == 0)
                 {
-                    countZero++;                        
+                    countZero++;
                 }
             }
         }
