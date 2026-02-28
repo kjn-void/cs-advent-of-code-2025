@@ -155,6 +155,13 @@ Benchmarks are implemented using **BenchmarkDotNet** with a fast configuration.
 dotnet run --project benchmarks/Aoc2025.Benchmarks -c Release
 ```
 
+Or do this to run with a specific SDK version
+
+```bash
+dotnet run --project benchmarks/Aoc2025.Benchmarks -c Release -f net8.0 -- --filter "*"
+dotnet run --project benchmarks/Aoc2025.Benchmarks -c Release -f net10.0 -- --filter "*"
+```
+
 ### Notes
 - Benchmark classes **must not be sealed** (BenchmarkDotNet requirement)
 - Inputs are loaded once per benchmark via `[GlobalSetup]`
